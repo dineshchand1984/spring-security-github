@@ -2,7 +2,7 @@ package com.bit.wonders.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,9 +11,6 @@ import com.bit.wonders.application.AppConfigProperties;
 @RestController
 public class HelloController {
 
-	public static String PROJECT_VERSION = "Version - 1.0";
-	public static String CONTROLLER_MSG  = "Hello World @ Azure.";
-	
 	@Autowired
 	private AppConfigProperties config;
 	
@@ -28,7 +25,7 @@ public class HelloController {
 	}
 	
 	@GetMapping("/user")
-	public OidcUser getOidcUserPrincipal(@AuthenticationPrincipal OidcUser principal) {
-		return principal;
+	public String getOidcUserPrincipal(@AuthenticationPrincipal OAuth2User principal) {
+		return principal.getAttribute("login");
 	}
 }
