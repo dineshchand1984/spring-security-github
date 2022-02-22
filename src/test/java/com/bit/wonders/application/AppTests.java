@@ -10,7 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.bit.wonders.web.HelloController;
@@ -35,18 +37,20 @@ public class AppTests {
 	}
 
 	@Test
+	@WithMockUser
 	@DisplayName(value = "Test controller")
 	void testController() {
-		assertEquals(homeController.projectVersion(), "1.0", "Seems fine");
-		assertEquals(homeController.helloWorld(), "This is dev");
+		assertEquals("1.0", homeController.projectVersion(), "Seems fine");
+		assertEquals("This is dev", homeController.helloWorld());
 	}
 
 	@Test
 	@DisplayName(value = "Test controller using TestRestTemplate")
 	void testTemplate() {
 		assertNotNull(testRestTemplate);
-		ResponseEntity<String> response = testRestTemplate.getForEntity("/hello", String.class);
-		String repsonseText = response.getBody();
-		assertEquals(repsonseText, "This is dev");
+		String securedURL = "http://localhost:" + port + "/version";
+		ResponseEntity<String> response = testRestTemplate.withBasicAuth("user", "password").getForEntity(securedURL,
+				String.class);
+		assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
 }

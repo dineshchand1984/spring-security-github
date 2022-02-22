@@ -41,11 +41,13 @@ spring:
   config:
     activate:
       on-profile: "dev"
-
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 com:
   bit:
     wonders:
       app:
         message: "This is dev"
-
+        version: 1.0
 
